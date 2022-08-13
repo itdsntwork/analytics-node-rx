@@ -1,0 +1,21 @@
+{
+  "name": "analytics-node-rx",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/itdsntwork/analytics-node-rx.git",
+  "author": "itdsntwork <scrtmanos@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.3",
+    "nodemon": "^2.0.19",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1"
+  },
+  "scripts": {
+    "build": "rimraf ./build && tsc",
+    "start:dev": "nodemon"
+  }
+}
