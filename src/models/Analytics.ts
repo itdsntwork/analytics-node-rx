@@ -1,21 +1,35 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import removeTrailingSlash from "remove-trailing-slash";
+import { AxiosInstance, AxiosRequestConfig } from "axios";
+import { Subject } from "rxjs";
+import { Queue } from "./Queue";
+import { Payload, Service } from "./Service";
 
 class Analytics {
-  private writeKey: string;
-  private host: string;
-  path: string;
-  axiosInstance: AxiosInstance;
+  private service: Service;
+  private queue: Queue;
+  private payloadSubject = new Subject<Payload>();
+  private isPendingSubject = new Subject<boolean>();
+  private eventSubject = new Subject<any>();
 
   constructor(writeKey: string, options?: Options) {
-    this.writeKey = writeKey;
-    this.host = removeTrailingSlash(options?.host || "https://api.segment.io");
-    this.path = removeTrailingSlash(options?.path || "/v1/batch");
-    this.axiosInstance = options?.axiosInstance
-      ? options.axiosInstance
-      : axios.create(options?.axiosConfig);
-    
-    
+    this.service = new Service({
+      writeKey,
+      client: options?.axiosInstance,
+      config: options?.axiosConfig,
+      host: options?.host,
+      path: options?.path,
+      version: "",
+      retryCount: options?.retryCount,
+      retryConfig: options?.retryConfig,
+      errorHandler: options?.errorHandler,
+      payloadSubject: this.payloadSubject,
+      isPendingSubject: this.isPendingSubject,
+    });
+    this.queue = new Queue({
+      flushAt: options?.flushAt,
+      maxQueueSize: options?.maxQueueSize,
+      eventSubject: this.eventSubject,
+      payloadSubject: this.payloadSubject,
+    });
   }
 }
 
@@ -31,3 +45,5 @@ interface Options {
   retryCount: number;
   errorHandler: (error: any) => void;
 }
+
+export default Analytics;

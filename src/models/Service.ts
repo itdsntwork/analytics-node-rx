@@ -42,7 +42,7 @@ class Service {
       headers,
     };
 
-    params.payloadPub.subscribe(this.submitEvents);
+    params.payloadSubject.subscribe(this.submitEvents);
   }
 
   private canRetry(error: AxiosError) {
@@ -103,20 +103,20 @@ class Service {
 }
 
 interface Params {
-  client: AxiosInstance;
-  config: AxiosRequestConfig;
-  host: string;
-  path: string;
+  client?: AxiosInstance;
+  config?: AxiosRequestConfig;
+  host?: string;
+  path?: string;
   version: string;
   writeKey: string;
-  retryCount: number;
-  retryConfig: IAxiosRetryConfig;
-  errorHandler: (err: any) => void;
-  payloadPub: Observable<Payload>;
+  retryCount?: number;
+  retryConfig?: IAxiosRetryConfig;
+  errorHandler: (err: any) => void ;
+  payloadSubject: Subject<Payload>;
   isPendingSubject: Subject<boolean>;
 }
 
-interface Payload {
+export interface Payload {
   messages: any[];
   callbacks: any[];
 }
