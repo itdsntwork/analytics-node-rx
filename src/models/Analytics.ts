@@ -1,7 +1,10 @@
 import { AxiosInstance, AxiosRequestConfig } from "axios";
 import { Subject } from "rxjs";
+import { Message, MessageParams, Type } from "./Message";
 import { Queue } from "./Queue";
 import { Payload, Service } from "./Service";
+
+const version = require("./package.json").version;
 
 class Analytics {
   private service: Service;
@@ -17,7 +20,7 @@ class Analytics {
       config: options?.axiosConfig,
       host: options?.host,
       path: options?.path,
-      version: "",
+      version,
       retryCount: options?.retryCount,
       retryConfig: options?.retryConfig,
       errorHandler: options?.errorHandler,
@@ -30,6 +33,35 @@ class Analytics {
       eventSubject: this.eventSubject,
       payloadSubject: this.payloadSubject,
     });
+  }
+
+  identify(message: MessageParams, callback: Callback) {
+    this.dispatchMessage(message, callback, "identify");
+  }
+  group(message: MessageParams, callback: Callback) {
+    this.dispatchMessage(message, callback, "group");
+  }
+  track(message: MessageParams, callback: Callback) {
+    this.dispatchMessage(message, callback, "track");
+  }
+  page(message: MessageParams, callback: Callback) {
+    this.dispatchMessage(message, callback, "page");
+  }
+  screen(message: MessageParams, callback: Callback) {
+    this.dispatchMessage(message, callback, "screen");
+  }
+  alias(message: MessageParams, callback: Callback) {
+    this.dispatchMessage(message, callback, "alias");
+  }
+  flush() {}
+
+  private dispatchMessage(
+    message: MessageParams,
+    callback: Callback,
+    type: Type
+  ) {
+    const _message = new Message(message, type, version);
+    this.eventSubject.next({ message: _message, callback });
   }
 }
 
@@ -47,3 +79,9 @@ interface Options {
 }
 
 export default Analytics;
+
+export interface Event {
+  message: Message;
+  callback: Callback;
+}
+export type Callback = (error: any, data: any) => void;

@@ -1,9 +1,11 @@
 import { Subject } from "rxjs";
+import { Event, Callback } from "./Analytics";
+import { Message } from "./Message";
 import { Payload } from "./Service";
 
 class Queue {
   private messageQueue: Message[] = [];
-  private callbackQueue: (() => void)[] = [];
+  private callbackQueue: (Callback)[] = [];
   private flushAt: number;
   private maxQueueSize: number;
   private payloadPub: Subject<Payload>;
@@ -51,11 +53,6 @@ interface Params {
   payloadSubject: Subject<Payload>;
 }
 
-interface Event {
-  message: Message;
-  callback: () => void;
-}
 
-interface Message {}
 
 export { Queue };
