@@ -55,13 +55,18 @@ class Analytics {
   }
   flush() {}
 
-  private dispatchMessage(
+  private async dispatchMessage(
     message: MessageParams,
     callback: Callback,
     type: Type
   ) {
-    const _message = new Message(message, type, version);
-    this.eventSubject.next({ message: _message, callback });
+    try {
+      await Message.validateParams(message, type);
+      const _message = new Message(message, type, version);
+      this.eventSubject.next({ message: _message, callback });
+    } catch (error) {
+      callback(error, message);
+    }
   }
 }
 
