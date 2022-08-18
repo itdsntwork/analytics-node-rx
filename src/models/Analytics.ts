@@ -57,7 +57,7 @@ class Analytics {
 
   private async dispatchMessage(
     message: MessageParams,
-    callback: Callback,
+    callback: Callback = () => {},
     type: Type
   ) {
     try {

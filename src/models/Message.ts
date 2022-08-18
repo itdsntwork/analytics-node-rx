@@ -53,37 +53,40 @@ class Message {
   }
 }
 
-const validationSchema = object({
-  type: yup
-    .string()
-    .required()
-    .oneOf(["identify", "group", "track", "page", "screen", "alias"]),
-  userId: yup.string().when("anonymousId", {
-    is: (anonymousId: string) => !anonymousId,
-    then: yup.string().required(),
-    otherwise: yup.string(),
-  }),
-  anonymousId: yup.string().when("userId", {
-    is: (userId: string) => !userId,
-    then: yup.string().required(),
-    otherwise: yup.string(),
-  }),
-  event: yup.string().when("type", {
-    is: (type: Type) => type === "track",
-    then: yup.string().required(),
-    otherwise: yup.string(),
-  }),
-  groupId: yup.string().when("type", {
-    is: (type: Type) => type === "group",
-    then: yup.string().required(),
-    otherwise: yup.string(),
-  }),
-  previousId: yup.string().when("type", {
-    is: (type: Type) => type === "alias",
-    then: yup.string().required(),
-    otherwise: yup.string(),
-  }),
-});
+const validationSchema = object().shape(
+  {
+    type: yup
+      .string()
+      .required()
+      .oneOf(["identify", "group", "track", "page", "screen", "alias"]),
+    userId: yup.string().when("anonymousId", {
+      is: (anonymousId: string) => !anonymousId,
+      then: yup.string().required(),
+      otherwise: yup.string(),
+    }),
+    anonymousId: yup.string().when("userId", {
+      is: (userId: string) => !userId,
+      then: yup.string().required(),
+      otherwise: yup.string(),
+    }),
+    event: yup.string().when("type", {
+      is: (type: Type) => type === "track",
+      then: yup.string().required(),
+      otherwise: yup.string(),
+    }),
+    groupId: yup.string().when("type", {
+      is: (type: Type) => type === "group",
+      then: yup.string().required(),
+      otherwise: yup.string(),
+    }),
+    previousId: yup.string().when("type", {
+      is: (type: Type) => type === "alias",
+      then: yup.string().required(),
+      otherwise: yup.string(),
+    }),
+  },
+  [["userId", "anonymousId"]]
+);
 
 export type Type = "identify" | "group" | "track" | "page" | "screen" | "alias";
 
