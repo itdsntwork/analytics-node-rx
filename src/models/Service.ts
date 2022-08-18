@@ -83,7 +83,8 @@ class Service {
     return this.client
       .post(`${this.host}${this.path}`, data, this.req)
       .then(() => {
-        // add error handler here
+        // If a callback fails the rest will not execute.
+        // Catching the error here though will overwrite consumer's error handling.
         callbacks.forEach((cb) => cb(null, data));
       })
       .catch((err) => {
