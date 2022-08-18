@@ -5,15 +5,15 @@ import { Payload } from "./Service";
 
 class Queue {
   private messageQueue: Message[] = [];
-  private callbackQueue: (Callback)[] = [];
+  private callbackQueue: Callback[] = [];
   private flushAt: number;
   private maxQueueSize: number;
-  private payloadPub: Subject<Payload>;
+  private payloadSubject: Subject<Payload>;
 
   constructor(params: Params) {
     this.flushAt = Math.max(params?.flushAt || 20, 1);
     this.maxQueueSize = Math.max(params.maxQueueSize || 1024 * 450); // 500kb is the API limit, if we approach the limit i.e., 450kb, we'll flush
-    this.payloadPub = params.payloadSubject;
+    this.payloadSubject = params.payloadSubject;
     params.eventSubject.subscribe(this.onEventReceived);
   }
 
@@ -31,7 +31,7 @@ class Queue {
       messages: this.messageQueue,
       callbacks: this.callbackQueue,
     };
-    this.payloadPub.next(payload);
+    this.payloadSubject.next(payload);
   }
 
   private shouldFlash(): boolean {
@@ -48,11 +48,9 @@ class Queue {
 
 interface Params {
   flushAt?: number;
-  maxQueueSize: number;
+  maxQueueSize?: number;
   eventSubject: Subject<any>;
   payloadSubject: Subject<Payload>;
 }
-
-
 
 export { Queue };

@@ -9,7 +9,7 @@ class Service {
   private path: string;
   private isPendingSubject: Subject<boolean>;
   private req: any;
-  private errorHandler: (err: any) => void;
+  private errorHandler?: (err: any) => void;
 
   constructor(params: Params) {
     this.client = params.client || axios.create(params.config);
@@ -83,6 +83,7 @@ class Service {
     return this.client
       .post(`${this.host}${this.path}`, data, this.req)
       .then(() => {
+        // add error handler here
         callbacks.forEach((cb) => cb(null, data));
       })
       .catch((err) => {
@@ -111,7 +112,7 @@ interface Params {
   writeKey: string;
   retryCount?: number;
   retryConfig?: IAxiosRetryConfig;
-  errorHandler: (err: any) => void ;
+  errorHandler?: (err: any) => void;
   payloadSubject: Subject<Payload>;
   isPendingSubject: Subject<boolean>;
 }

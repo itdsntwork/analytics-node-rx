@@ -22,7 +22,7 @@ class Analytics {
       path: options?.path,
       version,
       retryCount: options?.retryCount,
-      retryConfig: options?.retryConfig,
+      retryConfig: options?.axiosRetryConfig,
       errorHandler: options?.errorHandler,
       payloadSubject: this.payloadSubject,
       isPendingSubject: this.isPendingSubject,
@@ -80,6 +80,7 @@ interface Options {
   axiosInstance?: AxiosInstance;
   axiosRetryConfig?: any;
   retryCount: number;
+  maxQueueSize: number;
   errorHandler: (error: any) => void;
 }
 
