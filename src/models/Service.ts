@@ -42,7 +42,9 @@ class Service {
       headers,
     };
 
-    params.payloadSubject.subscribe(this.submitEvents);
+    params.payloadSubject.subscribe((payload: Payload) =>
+      this.submitEvents(payload)
+    );
   }
 
   private canRetry(error: AxiosError) {

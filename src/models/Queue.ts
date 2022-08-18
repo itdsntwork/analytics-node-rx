@@ -14,11 +14,13 @@ class Queue {
     this.flushAt = Math.max(params?.flushAt || 20, 1);
     this.maxQueueSize = Math.max(params.maxQueueSize || 1024 * 450); // 500kb is the API limit, if we approach the limit i.e., 450kb, we'll flush
     this.payloadSubject = params.payloadSubject;
-    params.eventSubject.subscribe(this.onEventReceived);
+    params.eventSubject.subscribe((event: Event) =>
+      this.onEventReceived(event)
+    );
   }
 
   private onEventReceived(event: Event) {
-    const { message, callback } = event;
+    const { message, callback = () => {} } = event;
     this.messageQueue.push(message);
     this.callbackQueue.push(callback);
     this.flush();

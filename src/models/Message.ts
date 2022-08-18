@@ -7,10 +7,17 @@ class Message {
   messageId: string;
   userId: string;
   anonymousId: string;
+  event?: string;
   type: Type;
   context: any;
   _metadata: any;
   timestamp: Date;
+  integrations?: { [key: string]: boolean };
+  groupId?: string;
+  traits?: Traits;
+  properties?: Properties;
+  category?: string;
+  previousId?: string;
 
   constructor(params: MessageParams, type: Type, version: string) {
     this.context = {
@@ -31,6 +38,14 @@ class Message {
 
     this.anonymousId = JSON.stringify(params.anonymousId);
     this.userId = JSON.stringify(params.userId);
+
+    this.event = (params as TrackParams).event;
+    this.integrations = params.integrations;
+    this.groupId = (params as GroupParams).groupId;
+    this.traits = (params as IdentifyParams).traits;
+    this.properties = (params as TrackParams).properties;
+    this.category = (params as PageParams).category;
+    this.previousId = (params as AliasParams).previousId;
   }
 
   public static async validateParams(params: MessageParams, type: Type) {

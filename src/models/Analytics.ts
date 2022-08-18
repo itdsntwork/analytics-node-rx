@@ -4,7 +4,7 @@ import { Message, MessageParams, Type } from "./Message";
 import { Queue } from "./Queue";
 import { Payload, Service } from "./Service";
 
-const version = require("./package.json").version;
+const version = require("../../package.json").version;
 
 class Analytics {
   private service: Service;
@@ -84,7 +84,7 @@ interface Options {
   errorHandler: (error: any) => void;
 }
 
-export default Analytics;
+export { Analytics };
 
 export interface Event {
   message: Message;
